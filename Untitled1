@@ -1,0 +1,49 @@
+void guardaHotel(struct hoteles *aux){
+	FILE *arch;
+	
+	if(!(arch = fopen("hoteles.xls", "a+"))){
+		cout<<"Error al intentar crear el archivo";
+		exit(1);
+	}
+	fprintf(arch, "%d\t", aux->idH);
+	fprintf(arch, "%s\t", aux->cadena);
+	fprintf(arch, "%s\t", aux->ciudad);
+	fprintf(arch, "%s\t", aux->direccion);
+	fprintf(arch, "%s\t", aux->telefonoC);
+	fprintf(arch, "%s\n", aux->correo);
+	
+	fclose(arch);
+}
+
+void leeHoteles(){
+	char cadena[20], ciudad[15], direccion[10], tel[10], correo[15];
+	int id;
+	
+	ifstream arch;
+	
+	arch.open("hoteles.xls", ios::in);
+	
+	while(!arch.eof()){
+		arch >> id >>cadena >> ciudad >> direccion >> tel >> correo;
+		if(!arch.eof()){
+			struct hoteles *aux = (struct hoteles*)malloc(sizeof(struct hoteles));
+			aux->idH = id;
+			strcpy(aux->cadena, cadena);
+			strcpy(aux->ciudad, ciudad);
+			strcpy(aux->direccion, direccion);
+			strcpy(aux->telefonoC, tel);
+			strcpy(aux->correo, correo);
+			
+			if(primeroH == NULL){
+				aux->anterior = NULL;
+				primeroH = aux;
+				ultimoH = aux;
+			}else{
+				aux->anterior = ultimoH;
+				ultimoH->siguiente = aux;
+				ultimoH = aux;
+			}
+		}
+	}
+	arch.close();
+}
